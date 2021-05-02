@@ -136,6 +136,53 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#users"); exit;
             }
         }
+        if(isset($_POST['hapus-user'])){
+            if(deleteUser($_POST)>0){
+                $_SESSION['section']=2;
+                $_SESSION['message-success']="Akun pengguna berhasil hapus.";
+                header("Location: ./#users"); exit;
+            }
+        }
+        $viewDocument1=mysqli_query($conn_v1, "SELECT * FROM lpm_data2_doc JOIN lpm_doc ON lpm_data2_doc.id_doc=lpm_doc.id_doc");
+        $viewDocument2=mysqli_query($conn_v1, "SELECT * FROM lpm_data1_doc JOIN lpm_doc ON lpm_data1_doc.id_doc=lpm_doc.id_doc JOIN prodi ON lpm_data1_doc.id_prodi=prodi.id_prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas");
+        if(isset($_POST['unduh-Doc'])){
+            $filename=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['data-doc']))));
+            $back_dir ="Assets/document/";
+            $file = $back_dir.$filename;
+            if (file_exists($file)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($file));
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: private');
+                header('Pragma: private');
+                header('Content-Length: ' . filesize($file));
+                ob_clean();
+                flush();
+                readfile($file);
+                exit;
+            } 
+            else {
+                $_SESSION['section']=3;
+                $_SESSION['message-danger'] = "Oops! File - $filename - tidak ditemukan...";
+                header("Location: ./#document");
+            }
+        }
+        if(isset($_POST['delete-docNon-prodi'])){
+            if(deleteDoc_nonProdi($_POST)>0){
+                $_SESSION['section']=3;
+                $_SESSION['message-success'] = "Dokumen berhasil dihapus :(";
+                header("Location: ./#document");
+            }
+        }
+        if(isset($_POST['delete-docProdi'])){
+            if(deleteDoc_Prodi($_POST)>0){
+                $_SESSION['section']=3;
+                $_SESSION['message-success'] = "Dokumen berhasil dihapus :(";
+                header("Location: ./#document");
+            }
+        }
     }
     if($_SESSION['id-role']<=2){
         $selectDoc=mysqli_query($conn_v1, "SELECT * FROM lpm_doc");

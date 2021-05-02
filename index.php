@@ -66,13 +66,9 @@
                                                                     </select>
                                                                     <small class="text-info">Jika Jenis Dokumen tidak per-Program Studi, tidak perlu diisi.</small>
                                                                 </div>
-                                                                <div class="input-group">
-                                                                    <div class="custom-file">
-                                                                        <input type="file" name="documen" class="custom-file-input shadow border-0" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04">
-                                                                    </div>
-                                                                    <div class="input-group-append">
-                                                                        <button class="btn btn-outline-secondary shadow border-0" type="button" id="inputGroupFileAddon04">Pilih Doc</button>
-                                                                    </div>
+                                                                <div class="custom-file">
+                                                                    <input type="file" name="documen" class="custom-file-input border-0 shadow" id="customFile">
+                                                                    <label class="custom-file-label border-0 shadow" for="customFile">Pilih Doc</label>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -199,10 +195,10 @@
             </div>
         <!-- ***** Welcome Area End ***** -->
     
+        <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']==1){?>
         <!-- ***** Data Users Start ***** -->
-            <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']==1){?>
             <section class="section" id="users">
-                <div class="container">
+                <div class="container" style="margin-top: 150px">
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
                             <img src="https://i.ibb.co/wQkqPdz/users-sharing.png" class="rounded img-fluid d-block mx-auto" alt="App">
@@ -228,12 +224,13 @@
                                                 <th scope="col">Role</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Akses Aksi</th>
+                                                <th colspan="1">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php $no=1; if(mysqli_num_rows($viewUsers)==0){?>
                                             <tr>
-                                                <th colspan="7">Belum ada pengguna yang terdaftar.</th>
+                                                <th colspan="8">Belum ada pengguna yang terdaftar.</th>
                                             </tr>
                                             <?php }if(mysqli_num_rows($viewUsers)>0){while($rowUsers=mysqli_fetch_assoc($viewUsers)){?>
                                             <tr>
@@ -364,6 +361,10 @@
                                                         </div>
                                                     </div>
                                                 </td>
+                                                <td><form action="" method="POST">
+                                                    <input type="hidden" name="id-user" value="<?= $rowUsers['id_user']?>">
+                                                    <button type="submit" name="hapus-user" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                                </form></td>
                                             </tr>
                                             <?php $no++; }}?>
                                         </tbody>
@@ -397,26 +398,176 @@
                     </div>
                 </div>
             </section>
-            <?php }}?>
         <!-- ***** Data Users End ***** -->
 
         <!-- ***** Data Document Item Start ***** -->
-            <section class="section" id="about2">
-                <div class="container">
+            <section class="section" id="document">
+                <div class="container" style="margin-top: 150px">
                     <div class="row">
-                        <div class="left-text col-lg-8 col-md-12 col-sm-12 mobile-bottom-fix">
+                        <div class="left-text col-lg-6 col-md-12 col-sm-12 m-auto mobile-bottom-fix">
                             <div class="left-heading">
-                                <h5>Document LPM UNWIRA</h5>
+                                <h3>Document LPM UNWIRA</h3>
                             </div>
-                            
+                            <div class="row">
+                                <!-- Alert Start -->
+                                    <div class="col-md-12">
+                                        <?php if(isset($_SESSION['section'])){if($_SESSION['section']==3){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
+                                    </div>
+                                <!-- Alert End -->
+
+                                <!-- Document Non prodi Start -->
+                                    <div class="col-lg-6">
+                                        <div class="card card-body shadow border-0 mt-3">
+                                            <img src="https://i.ibb.co/HPLDy5M/file-non-prodi.png" class="m-auto" alt="File Non Prodi" style="width: 100px">
+                                            <button type="button" class="btn btn-primary btn-sm shadow mt-3" data-toggle="modal" data-target=".non-prodi">Non prodi</button>
+                                            <div class="modal fade bd-example-modal-xl non-prodi bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <div class="modal-content shadow border-0 p-3 overflow-auto">
+                                                        <table class="table table-sm text-center">
+                                                            <thead>
+                                                                <tr style="border-top: hidden">
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">Tgl Buat</th>
+                                                                    <th scope="col">Jenis Dokumen</th>
+                                                                    <th scope="col">Nama</th>
+                                                                    <th colspan="3">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php $no=1; if(mysqli_num_rows($viewDocument1)==0){?>
+                                                                <tr>
+                                                                    <th colspan="5">Belum ada document yg dimasukan.</th>
+                                                                </tr>
+                                                                <?php }else if(mysqli_num_rows($viewDocument1)>0){while($rowDoc=mysqli_fetch_assoc($viewDocument1)){?>
+                                                                <tr>
+                                                                    <th scope="row"><?= $no;?></th>
+                                                                    <td><?= $rowDoc['date_created']?></td>
+                                                                    <td><?= $rowDoc['documen']?></td>
+                                                                    <td><?= $rowDoc['data_doc']?></td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#viewDoc-NProdi<?= $rowDoc['id_data2']?>"><i class="fas fa-eye"></i> Lihat</button>
+                                                                        <div class="modal fade" id="viewDoc-NProdi<?= $rowDoc['id_data2']?>" tabindex="-1" role="dialog" aria-labelledby="viewDoc-NProdi<?= $rowDoc['id_data2']?>Label" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-xl" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-body"><?php 
+                                                                                        $ekstensiDokumen=['xls','pdf','ppt','doc','docx'];
+                                                                                        $ekstensiGambar=explode('.',$rowDoc['data_doc']);
+                                                                                        $ekstensiGambar=strtolower(end($ekstensiGambar));
+                                                                                        if(in_array($ekstensiGambar,$ekstensiDokumen)){
+                                                                                            echo "<embed src='Assets/document/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
+                                                                                        }
+                                                                                    ?></div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td><form action="" method="POST">
+                                                                        <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                        <button type="submit" name="unduh-Doc" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                    </form></td>
+                                                                    <td>
+                                                                        <form action="" method="POST">
+                                                                            <input type="hidden" name="id-data2" value="<?= $rowDoc['id_data2']?>">
+                                                                            <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                            <button type="submit" name="delete-docNon-prodi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                                                        </form>
+                                                                    </td>
+                                                                </tr>
+                                                                <?php $no++; }}?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- Document Non Prodi End -->
+
+                                <!-- Document Prodi start -->
+                                    <div class="col-lg-6">
+                                        <div class="card card-body shadow border-0 mt-3 mb-5">
+                                            <img src="https://i.ibb.co/WyqpRYt/file-prodi.png" class="m-auto" alt="File Prodi" style="width: 100px">
+                                            <button type="button" class="btn btn-primary btn-sm shadow mt-3" data-toggle="modal" data-target=".prodi">Prodi</button>
+                                            <div class="modal fade bd-example-modal-xl prodi bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <div class="modal-content shadow border-0 p-3 overflow-auto">
+                                                        <table class="table table-sm text-center">
+                                                            <thead>
+                                                                <tr style="border-top: hidden">
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">Tgl Buat</th>
+                                                                    <th scope="col">Jenis Dokumen</th>
+                                                                    <th scope="col">Nama</th>
+                                                                    <th scope="col">Prodi/Fakultas</th>
+                                                                    <th colspan="3">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php $no=1; if(mysqli_num_rows($viewDocument2)==0){?>
+                                                                <tr>
+                                                                    <th colspan="5">Belum ada document yg dimasukan.</th>
+                                                                </tr>
+                                                                <?php }else if(mysqli_num_rows($viewDocument2)>0){while($rowDoc=mysqli_fetch_assoc($viewDocument2)){?>
+                                                                <tr>
+                                                                    <th scope="row"><?= $no;?></th>
+                                                                    <td><?= $rowDoc['date_created']?></td>
+                                                                    <td><?= $rowDoc['documen']?></td>
+                                                                    <td><?= $rowDoc['data_doc']?></td>
+                                                                    <td><?= $rowDoc['prodi']?>/<?= $rowDoc['fakultas']?></td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#viewDoc-Prodi<?= $rowDoc['id_data1']?>"><i class="fas fa-eye"></i> Lihat</button>
+                                                                        <div class="modal fade" id="viewDoc-Prodi<?= $rowDoc['id_data1']?>" tabindex="-1" role="dialog" aria-labelledby="viewDoc-Prodi<?= $rowDoc['id_data1']?>Label" aria-hidden="true">
+                                                                            <div class="modal-dialog modal-xl" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-body"><?php 
+                                                                                        $ekstensiDokumen=['xls','pdf','ppt','doc','docx'];
+                                                                                        $ekstensiGambar=explode('.',$rowDoc['data_doc']);
+                                                                                        $ekstensiGambar=strtolower(end($ekstensiGambar));
+                                                                                        if(in_array($ekstensiGambar,$ekstensiDokumen)){
+                                                                                            echo "<embed src='Assets/document/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
+                                                                                        }
+                                                                                    ?></div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td><form action="" method="POST">
+                                                                        <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                        <button type="submit" name="unduh-Doc" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                    </form></td>
+                                                                    <td>
+                                                                        <form action="" method="POST">
+                                                                            <input type="hidden" name="id-data1" value="<?= $rowDoc['id_data1']?>">
+                                                                            <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                            <button type="submit" name="delete-docProdi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                                                        </form>
+                                                                    </td>
+                                                                </tr>
+                                                                <?php $no++; }}?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- Document Prodi End -->
+                            </div>
                         </div>
-                        <div class="right-image col-lg-4 col-md-12 col-sm-12 mobile-bottom-fix-big" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
+                        <div class="right-image col-lg-6 col-md-12 col-sm-12 mobile-bottom-fix-big" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
                             <img src="https://i.ibb.co/3pbBxq2/document.png" class="rounded img-fluid d-block mx-auto" alt="App">
                         </div>
                     </div>
                 </div>
             </section>
         <!-- ***** Data Document Item End ***** -->
+        <?php }}?>
 
         <?php require_once("Application/access/footer.php");?>
 

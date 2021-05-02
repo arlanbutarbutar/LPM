@@ -72,7 +72,7 @@ if(!isset($_SESSION['id-user'])){
 }
 if(isset($_SESSION['id-user'])){
     if($_SESSION['id-role']==1){
-        function editProdi_user($data){global $conn_v1, $date;
+        function editProdi_user($data){global $conn_v1;
             $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
             $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
             if(empty($id_prodi) || $id_prodi==0){
@@ -83,7 +83,7 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "UPDATE users SET id_prodi='$id_prodi' WHERE nidn='$nidn'");
             return mysqli_affected_rows($conn_v1);
         }
-        function editRole_user($data){global $conn_v1, $date;
+        function editRole_user($data){global $conn_v1;
             $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
             $id_role=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-role']))));
             if(empty($id_role) || $id_role==0){
@@ -94,7 +94,7 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "UPDATE users SET id_role='$id_role' WHERE nidn='$nidn'");
             return mysqli_affected_rows($conn_v1);
         }
-        function editStatus_user($data){global $conn_v1, $date;
+        function editStatus_user($data){global $conn_v1;
             $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
             $id_active=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-active']))));
             if(empty($id_active) || $id_active==0){
@@ -105,7 +105,7 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "UPDATE users SET id_active='$id_active' WHERE nidn='$nidn'");
             return mysqli_affected_rows($conn_v1);
         }
-        function editAccess_user($data){global $conn_v1, $date;
+        function editAccess_user($data){global $conn_v1;
             $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
             $id_access=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-access']))));
             if(empty($id_access) || $id_access==0){
@@ -114,6 +114,33 @@ if(isset($_SESSION['id-user'])){
                 header("Location: ./#users");return false;
             }
             mysqli_query($conn_v1, "UPDATE users SET id_access='$id_access' WHERE nidn='$nidn'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function deleteUser($data){global $conn_v1;
+            $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-user']))));
+            mysqli_query($conn_v1, "DELETE FROM users WHERE id_user='$id_user'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function deleteDoc_nonProdi($data){global $conn_v1;
+            $id_data2=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-data2']))));
+            $data_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['data-doc']))));
+            $files=glob("Assets/document/".$data_doc);
+            foreach ($files as $file) {
+                if (is_file($file))
+                unlink($file);
+            }
+            mysqli_query($conn_v1, "DELETE FROM lpm_data2_doc WHERE id_data2='$id_data2'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function deleteDoc_Prodi($data){global $conn_v1;
+            $id_data1=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-data1']))));
+            $data_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['data-doc']))));
+            $files=glob("Assets/document/".$data_doc);
+            foreach ($files as $file) {
+                if (is_file($file))
+                unlink($file);
+            }
+            mysqli_query($conn_v1, "DELETE FROM lpm_data1_doc WHERE id_data1='$id_data1'");
             return mysqli_affected_rows($conn_v1);
         }
         // function __($data){global $conn_v1, $date;}
@@ -150,7 +177,7 @@ if(isset($_SESSION['id-user'])){
                 $_SESSION['message-danger']="Pilih documen kamu terlebih dahulu!";
                 header("Location: ./#page-top"); return false;
             }
-            $ekstensiGambarValid=['docx','pdf','xlsx'];
+            $ekstensiGambarValid=['xls','pdf','ppt','doc','docx'];
             $ekstensiGambar=explode('.',$namaFile);
             $ekstensiGambar=strtolower(end($ekstensiGambar));
             if(!in_array($ekstensiGambar,$ekstensiGambarValid)){
