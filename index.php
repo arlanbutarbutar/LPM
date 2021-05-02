@@ -199,7 +199,7 @@
             </div>
         <!-- ***** Welcome Area End ***** -->
     
-        <!-- ***** Features Big Item Start ***** -->
+        <!-- ***** Data Users Start ***** -->
             <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']==1){?>
             <section class="section" id="users">
                 <div class="container">
@@ -398,7 +398,25 @@
                 </div>
             </section>
             <?php }}?>
-        <!-- ***** Features Big Item End ***** -->
+        <!-- ***** Data Users End ***** -->
+
+        <!-- ***** Data Document Item Start ***** -->
+            <section class="section" id="about2">
+                <div class="container">
+                    <div class="row">
+                        <div class="left-text col-lg-8 col-md-12 col-sm-12 mobile-bottom-fix">
+                            <div class="left-heading">
+                                <h5>Document LPM UNWIRA</h5>
+                            </div>
+                            
+                        </div>
+                        <div class="right-image col-lg-4 col-md-12 col-sm-12 mobile-bottom-fix-big" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
+                            <img src="https://i.ibb.co/3pbBxq2/document.png" class="rounded img-fluid d-block mx-auto" alt="App">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <!-- ***** Data Document Item End ***** -->
 
         <?php require_once("Application/access/footer.php");?>
 
