@@ -1,4 +1,5 @@
 <?php if(!isset($_SESSION)){session_start();}
+    if(isset($_SESSION['id-user'])){header("Location: ../");exit;}
     require_once("../Application/controller/script.php");
     $_SESSION['auth']=1; $_SESSION['name-page']="Login"; $_SESSION['page']="login";
 ?>
