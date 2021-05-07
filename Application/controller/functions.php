@@ -145,9 +145,6 @@ if(isset($_SESSION['id-user'])){
         }
         // function __($data){global $conn_v1, $date;}
     }
-    if($_SESSION['id-role']==2){
-        // function __($data){global $conn_v1, $date;}
-    }
     if($_SESSION['id-role']<=2){
         function data1_lpm($data){global $conn_v1, $date;
             $id_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-doc']))));
@@ -196,10 +193,10 @@ if(isset($_SESSION['id-user'])){
         }
         // function __($data){global $conn_v1, $date;}
     }
-    if($_SESSION['id-role']==3){
+    if($_SESSION['id-role']<=3){
         // function __($data){global $conn_v1, $date;}
     }
-    if($_SESSION['id-role']==4){
+    if($_SESSION['id-role']<=4){
         // function __($data){global $conn_v1, $date;}
     }
 }

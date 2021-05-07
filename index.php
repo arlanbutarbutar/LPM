@@ -26,7 +26,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="left-text col-lg-6 col-md-6 col-sm-12 col-xs-12 m-auto" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
-                                <h1 class="text-white">Lembaga Penjamin Mutu <strong>UNWIRA</strong></h1>
+                                <h1 class="text-white mt-5">Lembaga Penjamin Mutu <strong>UNWIRA</strong></h1>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 m-auto" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
                                 <?php if(isset($_SESSION['section'])){if($_SESSION['section']==1){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
@@ -184,9 +184,9 @@
                                     <!-- End Unduh Document -->
                                 </div>
                                 <?php }else if($_SESSION['id-role']==4){?>
-                                <img src="https://i.ibb.co/jyKgWzS/header.png" class="rounded img-fluid d-block mx-auto" alt="Profile LPM UNWIRA">
+                                <img src="https://i.ibb.co/jyKgWzS/header.png" class="rounded img-fluid d-block mx-auto mt-3" alt="Profile LPM UNWIRA">
                                 <?php }}else if(!isset($_SESSION['id-user'])){?>
-                                <img src="https://i.ibb.co/jyKgWzS/header.png" class="rounded img-fluid d-block mx-auto" alt="Profile LPM UNWIRA">
+                                <img src="https://i.ibb.co/jyKgWzS/header.png" class="rounded img-fluid d-block mx-auto mt-3" alt="Profile LPM UNWIRA">
                                 <?php }?>
                             </div>
                         </div>

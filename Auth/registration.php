@@ -24,8 +24,8 @@
             <div class="welcome-area" id="welcome">
                 <div class="header-text">
                     <div class="container">
-                        <div class="row">
-                            <div class="left-text col-lg-6 col-md-6 col-sm-12 col-xs-12 mt-5" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
+                        <div class="row mobileAR">
+                            <div class="left-text col-lg-6 col-md-6 col-sm-12 col-xs-12 mt-5" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s" style="margin-top: 150px">
                                 <h3 class="text-center text-white mt-5">Registration</h3>
                                 <p class="d-flex justify-content-center">Sudah punya akun? silakan <a href="login" class="nav-link ml-n2 mr-n3 mt-n2 text-white font-weight-bold">Masuk</a>.</p>
                                 <div class="col-8 m-auto mt-3">
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
-                                <img src="https://i.ibb.co/vxRLzLy/regis.png" style="width: 300px" class="rounded img-fluid d-block mx-auto" alt="Login Content">
+                                <img src="https://i.ibb.co/vxRLzLy/regis.png" style="width: 300px; margin-top: 100px" class="rounded img-fluid d-block mx-auto mobileIMG" alt="Login Content">
                             </div>
                         </div>
                     </div>

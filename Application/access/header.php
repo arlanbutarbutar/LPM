@@ -35,3 +35,19 @@
     <link rel="stylesheet" type="text/css" href="Assets/css/scroll.css">
     <link rel="stylesheet" type="text/css" href="Assets/fontawesome-free/css/all.min.css">
 <?php }?>
+<style>
+.mobileAR{
+    margin-top: 0;
+}
+.mobileIMG{
+    display: block;
+}
+@media screen and (max-width: 640px){
+    .mobileAR{
+        margin-top: 250px;
+    }
+    .mobileIMG{
+        display: hidden;
+    }
+}
+</style>

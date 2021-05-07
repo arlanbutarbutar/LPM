@@ -24,7 +24,7 @@
             <div class="welcome-area" id="welcome">
                 <div class="header-text">
                     <div class="container">
-                        <div class="row">
+                        <div class="row" style="margin-top: 100px">
                             <div class="left-text col-lg-6 col-md-6 col-sm-12 col-xs-12" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
                                 <h3 class="text-center text-white">Login</h3>
                                 <p class="d-flex justify-content-center">Belum punya akun? silakan <a href="registration" class="nav-link ml-n2 mr-n3 mt-n2 text-white font-weight-bold">Daftar</a>.</p>
