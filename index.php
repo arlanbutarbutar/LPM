@@ -2,6 +2,7 @@
     require_once("Application/controller/script.php");
     if(isset($_SESSION['auth'])){unset($_SESSION['auth']);}
     $_SESSION['name-page']="";  $_SESSION['page']="./";
+    if(isset($_SESSION['access-file'])){unset($_SESSION['access-file']);}
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +38,7 @@
                                     <div class="col-lg-6">
                                         <div class="card card-body border-0 shadow text-center mt-3">
                                             <img src="https://i.ibb.co/vmFRv1z/add-file.png" style="width: 100px" class="m-auto" alt="Add Document">
-                                            <button type="button" class="btn btn-primary btn-sm mt-3" data-toggle="modal" data-target="#tambahDokumen">Tambah Dokumen</button>
+                                            <button type="button" class="btn btn-info btn-sm mt-3" data-toggle="modal" data-target="#tambahDokumen">Tambah Dokumen</button>
                                             <div class="modal fade" id="tambahDokumen" tabindex="-1" role="dialog" aria-labelledby="tambahDokumen" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
@@ -50,7 +51,7 @@
                                                         <form action="" method="POST" enctype="multipart/form-data">
                                                             <div class="modal-body">
                                                                 <div class="form-group">
-                                                                    <select name="id-doc" class="form-control shadow border-0" required>
+                                                                    <select name="id-doc" class="form-control" required>
                                                                         <option>Pilih Jenis Dokumen</option>
                                                                         <?php foreach($selectDoc as $rowDoc):?>
                                                                         <option value="<?= $rowDoc['id_doc']?>"><?= $rowDoc['documen']?></option>
@@ -58,7 +59,7 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                    <select name="id-prodi" class="form-control border-0 shadow" required>
+                                                                    <select name="id-prodi" class="form-control" required>
                                                                         <option value="0">Pilih Program Studi</option>
                                                                         <?php foreach($selectProdi as $rowProdi):?>
                                                                         <option value="<?= $rowProdi['id_prodi']?>"><?= $rowProdi['prodi']?></option>
@@ -67,13 +68,13 @@
                                                                     <small class="text-info">Jika Jenis Dokumen tidak per-Program Studi, tidak perlu diisi.</small>
                                                                 </div>
                                                                 <div class="custom-file">
-                                                                    <input type="file" name="documen" class="custom-file-input border-0 shadow" id="customFile">
-                                                                    <label class="custom-file-label border-0 shadow" for="customFile">Pilih Doc</label>
+                                                                    <input type="file" name="documen" class="custom-file-input" id="customFile">
+                                                                    <label class="custom-file-label" for="customFile">Pilih Doc</label>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Close</button>
-                                                                <button type="submit" name="lpm-data1-doc" class="btn btn-primary btn-sm">Save</button>
+                                                                <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="lpm-data1-doc" class="btn btn-info btn-sm shadow">Save</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -89,9 +90,9 @@
                                     <div class="col-lg-6">
                                         <div class="card card-body border-0 shadow mt-3">
                                             <img src="https://i.ibb.co/W5zMQNg/file.png" style="width: 100px" class="m-auto" alt="Add Document">
-                                            <button type="button" class="btn btn-primary btn-sm mt-3" data-toggle="modal" data-target=".bd-example-modal-xl">Unduh Dokumen</button>
-                                            <div class="modal fade bd-example-modal-xl bg-info" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-xl">
+                                            <button type="button" class="btn btn-info btn-sm mt-3" data-toggle="modal" data-target=".bd-example-modal-xl">Unduh Dokumen</button>
+                                            <div class="modal fade bd-example-modal-xl bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl shadow">
                                                     <div class="modal-content">
                                                         <h4 class="text-center mt-4">Data Pelayanan Dokumen Lembaga Penjamin Mutu UNWIRA</h4>
                                                         <div class="row mt-3">
@@ -99,7 +100,7 @@
                                                             <div class="col-lg-6 text-center mt-3">
                                                                 <h6>Data LPM Non Prodi</h6>
                                                                 <div class="card card-body border-0" style="overflow-x: auto">
-                                                                    <table class="table table-sm">
+                                                                    <table class="table table-sm text-center">
                                                                         <thead>
                                                                             <tr style="border-top: hidden">
                                                                                 <th scope="col">#</th>
@@ -114,7 +115,7 @@
                                                                         <tbody>
                                                                             <?php $no=1; if(mysqli_num_rows($dataLPM2)==0){?>
                                                                             <tr>
-                                                                                <th>Belum ada dokumen yang dimasukan.</th>
+                                                                                <th colspan="5">Belum ada dokumen yang dimasukan.</th>
                                                                             </tr>
                                                                             <?php }else if(mysqli_num_rows($dataLPM2)>0){while($rowNProdi=mysqli_fetch_assoc($dataLPM2)){?>
                                                                             <tr>
@@ -125,7 +126,7 @@
                                                                                 <?php if($_SESSION['id-access']==1){?>
                                                                                 <td><form action="" method="POST">
                                                                                     <input type="hidden" name="data-doc" value="<?= $rowNProdi['data_doc']?>">
-                                                                                    <button type="submit" name="unduh-DocNProdi" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                                    <button type="submit" name="unduh-DocNProdi" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                                 </form></td>
                                                                                 <?php }?>
                                                                             </tr>
@@ -140,20 +141,22 @@
                                                             <div class="col-lg-6 text-center mt-3">
                                                                 <h6>Data LPM Prodi <?= $rowVProdi['prodi']?></h6>
                                                                 <div class="card card-body border-0" style="overflow-x: auto">
-                                                                    <table class="table table-sm">
+                                                                    <table class="table table-sm text-center">
                                                                         <thead>
                                                                             <tr style="border-top: hidden">
                                                                                 <th scope="col">#</th>
                                                                                 <th scope="col">Jenis Dokumen</th>
                                                                                 <th scope="col">Nama Dokumen</th>
                                                                                 <th scope="col">Tanggal Buat</th>
-                                                                                <th colspan="2">Aksi</th>
+                                                                                <?php if($_SESSION['id-access']==1){?>
+                                                                                <th colspan="1">Aksi</th>
+                                                                                <?php }?>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                             <?php $no=1; if(mysqli_num_rows($dataLPM1)==0){?>
                                                                             <tr>
-                                                                                <th>Belum ada dokumen yang dimasukan.</th>
+                                                                                <th colspan="6">Belum ada dokumen yang dimasukan.</th>
                                                                             </tr>
                                                                             <?php }else if(mysqli_num_rows($dataLPM1)>0){while($rowProdi=mysqli_fetch_assoc($dataLPM1)){?>
                                                                             <tr>
@@ -164,7 +167,7 @@
                                                                                 <?php if($_SESSION['id-access']==1){?>
                                                                                 <td><form action="" method="POST">
                                                                                     <input type="hidden" name="data-doc" value="<?= $rowProdi['data_doc']?>">
-                                                                                    <button type="submit" name="unduh-DocProdi" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                                    <button type="submit" name="unduh-DocProdi" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                                 </form></td>
                                                                                 <?php }?>
                                                                             </tr>
@@ -196,6 +199,118 @@
         <!-- ***** Welcome Area End ***** -->
     
         <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']==1){?>
+
+        <!-- ***** Data Users Start ***** -->
+            <section class="section" id="prodi-unit">
+                <div class="container" style="margin-top: 150px">
+                    <div class="row">
+                        <div class="left-text col-lg-6 col-md-12 col-sm-12 m-auto mobile-bottom-fix">
+                            <div class="left-heading">
+                                <h3>Prodi/Unit LPM UNWIRA</h3>
+                            </div>
+                            <div class="row">
+                                <!-- Alert Start -->
+                                    <div class="col-md-12">
+                                        <?php if(isset($_SESSION['section'])){if($_SESSION['section']==4){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
+                                    </div>
+                                <!-- Alert End -->
+
+                                <!-- Add Prodi/Unit Start -->
+                                    <div class="col-lg-6">
+                                        <div class="card card-body shadow border-0 mt-3">
+                                            <img src="https://i.ibb.co/xLkWWNg/plus.png" style="width: 100px" class="m-auto" alt="Add Document">
+                                            <button type="button" class="btn btn-info btn-sm mt-3" data-toggle="modal" data-target="#exampleModal">Tambah Prodi/Unit</button>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Tambahkan Program Studi atau Unit.</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="" method="POST">
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <input type="text" name="prodi-unit" class="form-control" placeholder="Nama Prodi/Unit" required>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <select name="id-fakultas" class="form-control" required>
+                                                                        <option>Pilih Fakultas/Unit</option>
+                                                                        <?php foreach($selectFakultas as $rowFak):?>
+                                                                        <option value="<?= $rowFak['id_fakultas']?>"><?= $rowFak['fakultas']?></option>
+                                                                        <?php endforeach;?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="save-prodi-unit" class="btn btn-info btn-sm">Save</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- Add Prodi/Unit Start -->
+
+                                <!-- Data Prodi/Unit Start -->
+                                    <div class="col-lg-6">
+                                        <div class="card card-body shadow border-0 mt-3">
+                                            <img src="https://i.ibb.co/CVXZPx3/id-card.png" style="width: 100px" class="m-auto" alt="Add Document">
+                                            <button type="button" class="btn btn-info btn-sm mt-3" data-toggle="modal" data-target=".prodi-unit">View Prodi/Unit</button>
+                                            <div class="modal fade prodi-unit bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl shadow">
+                                                    <div class="modal-content" style="overflow-x: auto">
+                                                        <h4 class="text-center mt-4">Daftar Program Studi atau Unit yang terdata.</h4>
+                                                        <table class="table table-sm small text-center">
+                                                            <thead>
+                                                                <tr style="border-top: hidden">
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col">Prodi/Unit</th>
+                                                                    <th scope="col">Fakultas/Unit</th>
+                                                                    <?php if($_SESSION['id-access']==1){?>
+                                                                    <th colspan="1">Aksi</th>
+                                                                    <?php }?>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php $no=1; if(mysqli_num_rows($prodiUnit)==0){?>
+                                                                <tr>
+                                                                    <th colspan="4">Belum ada data Prodi/Unit.</th>
+                                                                </tr>
+                                                                <?php }else if(mysqli_num_rows($prodiUnit)>0){while($rowProdi=mysqli_fetch_assoc($prodiUnit)){?>
+                                                                <tr>
+                                                                    <th scope="row"><?= $no;?></th>
+                                                                    <td><?= $rowProdi['prodi']?></td>
+                                                                    <td><?= $rowProdi['fakultas']?></td>
+                                                                    <?php if($_SESSION['id-access']==1){?>
+                                                                    <td><form action="" method="POST">
+                                                                        <input type="hidden" name="id-prodi" value="<?= $rowProdi['data_doc']?>">
+                                                                        <button type="submit" name="hapus-prodi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                                                    </form></td>
+                                                                    <?php }?>
+                                                                </tr>
+                                                                <?php $no++; }}?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!-- Data Prodi/Unit End -->
+                            </div>
+                        </div>
+                        <div class="right-image col-lg-6 col-md-12 col-sm-12 mobile-bottom-fix-big" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
+                            <img src="https://i.ibb.co/ZSYZKZH/5251.png" class="rounded img-fluid d-block mx-auto" alt="App">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <!-- ***** Data Users End ***** -->
+
         <!-- ***** Data Users Start ***** -->
             <section class="section" id="users">
                 <div class="container" style="margin-top: 150px">
@@ -224,7 +339,9 @@
                                                 <th scope="col">Role</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Akses Aksi</th>
+                                                <?php if($_SESSION['id-access']==1){?>
                                                 <th colspan="1">Aksi</th>
+                                                <?php }?>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -243,8 +360,8 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-body text-center mb-n3">
                                                                     <img src="Assets/img/<?= $rowUsers['img']?>" alt="Foto Profil <?= $rowUsers['username']?>" style="width: 150px">
-                                                                    <p class="mt-5">Email: <?= $rowUsers['email']?></p>
-                                                                    <p class="mt-n4">Tgl Buat: <?= $rowUsers['date_created']?></p>
+                                                                    <p class="mt-3">Email: <?= $rowUsers['email']?></p>
+                                                                    <p>Tgl Buat: <?= $rowUsers['date_created']?></p>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
@@ -273,7 +390,7 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
-                                                                        <button type="submit" name="ubah-prodi" class="btn btn-primary btn-sm">Save</button>
+                                                                        <button type="submit" name="ubah-prodi" class="btn btn-info btn-sm">Save</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -300,7 +417,7 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
-                                                                        <button type="submit" name="ubah-role" class="btn btn-primary btn-sm">Save</button>
+                                                                        <button type="submit" name="ubah-role" class="btn btn-info btn-sm">Save</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -327,7 +444,7 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
-                                                                        <button type="submit" name="ubah-status" class="btn btn-primary btn-sm">Save</button>
+                                                                        <button type="submit" name="ubah-status" class="btn btn-info btn-sm">Save</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -354,17 +471,19 @@
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
-                                                                        <button type="submit" name="ubah-access" class="btn btn-primary btn-sm">Save</button>
+                                                                        <button type="submit" name="ubah-access" class="btn btn-info btn-sm">Save</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </td>
+                                                <?php if($_SESSION['id-access']==1){?>
                                                 <td><form action="" method="POST">
                                                     <input type="hidden" name="id-user" value="<?= $rowUsers['id_user']?>">
                                                     <button type="submit" name="hapus-user" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
                                                 </form></td>
+                                                <?php }?>
                                             </tr>
                                             <?php $no++; }}?>
                                         </tbody>
@@ -419,7 +538,7 @@
                                     <div class="col-lg-6">
                                         <div class="card card-body shadow border-0 mt-3">
                                             <img src="https://i.ibb.co/HPLDy5M/file-non-prodi.png" class="m-auto" alt="File Non Prodi" style="width: 100px">
-                                            <button type="button" class="btn btn-primary btn-sm shadow mt-3" data-toggle="modal" data-target=".non-prodi">Non prodi</button>
+                                            <button type="button" class="btn btn-info btn-sm shadow mt-3" data-toggle="modal" data-target=".non-prodi">Non prodi</button>
                                             <div class="modal fade bd-example-modal-xl non-prodi bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl">
                                                     <div class="modal-content shadow border-0 p-3 overflow-auto">
@@ -445,7 +564,7 @@
                                                                     <td><?= $rowDoc['documen']?></td>
                                                                     <td><?= $rowDoc['data_doc']?></td>
                                                                     <td>
-                                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#viewDoc-NProdi<?= $rowDoc['id_data2']?>"><i class="fas fa-eye"></i> Lihat</button>
+                                                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewDoc-NProdi<?= $rowDoc['id_data2']?>"><i class="fas fa-eye"></i> Lihat</button>
                                                                         <div class="modal fade" id="viewDoc-NProdi<?= $rowDoc['id_data2']?>" tabindex="-1" role="dialog" aria-labelledby="viewDoc-NProdi<?= $rowDoc['id_data2']?>Label" aria-hidden="true">
                                                                             <div class="modal-dialog modal-xl" role="document">
                                                                                 <div class="modal-content">
@@ -466,7 +585,7 @@
                                                                     </td>
                                                                     <td><form action="" method="POST">
                                                                         <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
-                                                                        <button type="submit" name="unduh-Doc" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                        <button type="submit" name="unduh-Doc" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                     </form></td>
                                                                     <td>
                                                                         <form action="" method="POST">
@@ -490,7 +609,7 @@
                                     <div class="col-lg-6">
                                         <div class="card card-body shadow border-0 mt-3 mb-5">
                                             <img src="https://i.ibb.co/WyqpRYt/file-prodi.png" class="m-auto" alt="File Prodi" style="width: 100px">
-                                            <button type="button" class="btn btn-primary btn-sm shadow mt-3" data-toggle="modal" data-target=".prodi">Prodi</button>
+                                            <button type="button" class="btn btn-info btn-sm shadow mt-3" data-toggle="modal" data-target=".prodi">Prodi</button>
                                             <div class="modal fade bd-example-modal-xl prodi bg-light" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl">
                                                     <div class="modal-content shadow border-0 p-3 overflow-auto">
@@ -518,7 +637,7 @@
                                                                     <td><?= $rowDoc['data_doc']?></td>
                                                                     <td><?= $rowDoc['prodi']?>/<?= $rowDoc['fakultas']?></td>
                                                                     <td>
-                                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#viewDoc-Prodi<?= $rowDoc['id_data1']?>"><i class="fas fa-eye"></i> Lihat</button>
+                                                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewDoc-Prodi<?= $rowDoc['id_data1']?>"><i class="fas fa-eye"></i> Lihat</button>
                                                                         <div class="modal fade" id="viewDoc-Prodi<?= $rowDoc['id_data1']?>" tabindex="-1" role="dialog" aria-labelledby="viewDoc-Prodi<?= $rowDoc['id_data1']?>Label" aria-hidden="true">
                                                                             <div class="modal-dialog modal-xl" role="document">
                                                                                 <div class="modal-content">
@@ -539,7 +658,7 @@
                                                                     </td>
                                                                     <td><form action="" method="POST">
                                                                         <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
-                                                                        <button type="submit" name="unduh-Doc" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Unduh</button>
+                                                                        <button type="submit" name="unduh-Doc" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                     </form></td>
                                                                     <td>
                                                                         <form action="" method="POST">
@@ -571,5 +690,5 @@
 
         <?php require_once("Application/access/footer.php");?>
 
-  </body>
+    </body>
 </html>

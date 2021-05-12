@@ -2,9 +2,9 @@
 $date=date("l, d M Y");
 if(!isset($_SESSION['id-user'])){
     function login($data){global $conn_v1;
-        $email=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['email']))));
+        $nidn_email=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn-email']))));
         $password=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['password']))));
-        $users=mysqli_query($conn_v1, "SELECT * FROM users WHERE email='$email'");
+        $users=mysqli_query($conn_v1, "SELECT * FROM users WHERE nidn='$nidn_email' OR email='$nidn_email'");
         if(mysqli_num_rows($users)>0){
             while($row=mysqli_fetch_assoc($users)){
                 $pass=$row['password'];
@@ -36,7 +36,7 @@ if(!isset($_SESSION['id-user'])){
     function registration($data){global $conn_v1, $date;
         $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
         if(empty($id_prodi) || $id_prodi==0){
-            $_SESSION['message-danger']="Maaf, kamu belum memilih Progam Studi!";
+            $_SESSION['message-danger']="Maaf, kamu belum memilih Progam Studi atau Unit!";
             header("Location: registration"); return false;
         }
         $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
@@ -143,6 +143,17 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "DELETE FROM lpm_data1_doc WHERE id_data1='$id_data1'");
             return mysqli_affected_rows($conn_v1);
         }
+        function add_prodiUnit($data){global $conn_v1;
+            $prodi_unit=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['prodi-unit']))));
+            $id_fakultas=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-fakultas']))));
+            if(empty($id_fakultas) || $id_fakultas==0){
+                $_SESSION['section']=4;
+                $_SESSION['message-danger']="Kamu belum memilih fakultas/unit!";
+                header("Location: ./#prodi-unit");return false;
+            }
+            mysqli_query($conn_v1, "INSERT INTO prodi(id_fakultas,prodi) VALUES('$id_fakultas','$prodi_unit')");
+            return mysqli_affected_rows($conn_v1);
+        }
         // function __($data){global $conn_v1, $date;}
     }
     if($_SESSION['id-role']<=2){
@@ -197,6 +208,96 @@ if(isset($_SESSION['id-user'])){
         // function __($data){global $conn_v1, $date;}
     }
     if($_SESSION['id-role']<=4){
+        function save_biodata($data){global $conn_v1;
+            $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-user']))));
+            $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
+            $old_nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['old-nidn']))));
+            if($nidn!=$old_nidn){
+                $check_nidn=mysqli_query($conn_v1, "SELECT * FROM users WHERE nidn='$nidn'");
+                if(mysqli_num_rows($check_nidn)>0){
+                    $_SESSION['message-danger']="Maaf, NIDN/NIP yang kamu masukan sudah ada atau sedang terpakai! Silakan cek ulang.";
+                    header("Location: profile"); return false;
+                }
+            }
+            $username=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['username']))));
+            $email=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['email']))));
+            $old_email=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['old-email']))));
+            if($email!=$old_email){
+                $checkEmail=mysqli_query($conn_v1, "SELECT * FROM users WHERE email='$email'");
+                if(mysqli_num_rows($checkEmail)>0){
+                    $_SESSION['message-danger']="Maaf, akun email yang kamu daftarkan sudah ada! Silakan masukan yang lain.";
+                    header("Location: registration"); return false;
+                }
+            }
+            $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
+            if(empty($id_prodi) || $id_prodi==0){
+                $_SESSION['message-danger']="Maaf, kamu belum memilih Progam Studi atau Unit!";
+                header("Location: profile"); return false;
+            }
+            mysqli_query($conn_v1, "UPDATE users SET nidn='$nidn', username='$username', email='$email', id_prodi='$id_prodi' WHERE id_user='$id_user'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function save_profile($data){global $conn_v1;
+            $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-user']))));
+            $old_img=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['old-img']))));
+            $img=file_photo_user($id_user);
+            if(!$img){return false;}
+            if($old_img!='default.png'){unlink('Assets/img/'.$old_img);}
+            mysqli_query($conn_v1, "UPDATE users SET img='$img' WHERE id_user='$id_user'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function file_photo_user(){
+            $namaFile=$_FILES["profile"]["name"];
+            $ukuranFile=$_FILES["profile"]["size"];
+            $error=$_FILES["profile"]["error"];
+            $tmpName=$_FILES["profile"]["tmp_name"];
+            if($error===4){
+                $_SESSION['message-danger']="Pilih gambar profil kamu terlebih dahulu!";
+                header("Location: profile"); return false;
+            }
+            $ekstensiGambarValid=['jpg','jpeg','png'];
+            $ekstensiGambar=explode('.',$namaFile);
+            $ekstensiGambar=strtolower(end($ekstensiGambar));
+            if(!in_array($ekstensiGambar,$ekstensiGambarValid)){
+                $_SESSION['message-danger']="Maaf, file kamu bukan gambar!";
+                header("Location: profile"); return false;
+            }
+            if($ukuranFile>2000000){
+                $_SESSION['message-danger']="Maaf, ukuran gambar terlalu besar! (2MB)";
+                header("Location: profile"); return false;
+            }
+            $namaFile_encrypt=crc32($namaFile);
+            $encrypt=$namaFile_encrypt.".jpg";
+            move_uploaded_file($tmpName,'Assets/img/'.$encrypt);
+            return $encrypt;
+        }
+        function save_password($data){global $conn_v1;
+            $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-user']))));
+            $password=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['password']))));
+            $checkUser=mysqli_query($conn_v1, "SELECT * FROM users WHERE id_user='$id_user'");
+            $row=mysqli_fetch_assoc($checkUser);
+            $pass=$row['password'];
+            if(password_verify($password, $pass)){
+                $password1=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['password1']))));
+                $password2=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['password2']))));
+                if($password1!=$password2){
+                    $_SESSION['message-danger']="Maaf, kata sandi yang kamu masukan tidak sama!";
+                    header("Location: profile-settings"); return false;
+                }else{
+                    $check_lenght_pass=strlen($password1);
+                    if($check_lenght_pass<8){
+                        $_SESSION['message-danger']="Maaf, password kamu terlalu pendek (Min: 8)!";
+                        header("Location: profile-settings");return false;
+                    }
+                }
+                $newPass=password_hash($password1, PASSWORD_DEFAULT);
+                mysqli_query($conn_v1, "UPDATE users SET password='$newPass' WHERE id_user='$id_user'");
+                return mysqli_affected_rows($conn_v1);
+            }else{
+                $_SESSION['message-danger']="Maaf, password lama yang kamu masukan salah. Silakan masukan ulang!";
+                header("Location: profile-settings");return false;
+            }
+        }
         // function __($data){global $conn_v1, $date;}
     }
 }

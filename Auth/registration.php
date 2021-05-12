@@ -32,17 +32,17 @@
                                     <?php if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}?>
                                     <form action="" method="POST">
                                         <div class="form-group">
-                                            <input type="number" name="nidn" placeholder="NIDN" class="form-control text-center" required>
+                                            <input type="number" name="nidn" placeholder="NIDN/NIP" class="form-control text-center" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" name="username" placeholder="Nama Dosen" class="form-control text-center" required>
+                                            <input type="text" name="username" placeholder="Nama Lengkap" class="form-control text-center" required>
                                         </div>
                                         <div class="form-group">
                                             <input type="email" name="email" placeholder="Email" class="form-control text-center" required>
                                         </div>
                                         <div class="form-group">
                                             <select name="id-prodi" class="form-control text-center" required>
-                                                <option>Pilih Program Studi</option>
+                                                <option>Pilih Prodi/Unit</option>
                                                 <?php foreach($select_prodi as $row_prodi):?>
                                                 <option value="<?= $row_prodi['id_prodi']?>"><?= $row_prodi['prodi']?></option>
                                                 <?php endforeach;?>

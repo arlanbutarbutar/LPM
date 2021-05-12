@@ -90,9 +90,6 @@ if(!isset($_SESSION['id-user'])){
     }
     $select_prodi=mysqli_query($conn_v1, "SELECT * FROM prodi");
 }else if($_SESSION['id-user']){
-    $id_prodi=addslashes(trim($_SESSION['id-prodi']));
-    $viewProdi=mysqli_query($conn_v1, "SELECT * FROM prodi WHERE id_prodi='$id_prodi'");
-    $rowVProdi=mysqli_fetch_assoc($viewProdi);
     if($_SESSION['id-role']==1){
         $data1=15;
         $result1=mysqli_query($conn_v1, "SELECT * FROM users");
@@ -183,6 +180,15 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#document");
             }
         }
+        $selectFakultas=mysqli_query($conn_v1, "SELECT * FROM fakultas");
+        $prodiUnit=mysqli_query($conn_v1, "SELECT * FROM prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas");
+        if(isset($_POST['save-prodi-unit'])){
+            if(add_prodiUnit($_POST)>0){
+                $_SESSION['section']=4;
+                $_SESSION['message-success'] = "Telah berhasil menambahkan Prodi/Unit baru.";
+                header("Location: ./#prodi-unit");
+            }
+        }
     }
     if($_SESSION['id-role']<=2){
         $selectDoc=mysqli_query($conn_v1, "SELECT * FROM lpm_doc");
@@ -247,5 +253,31 @@ if(!isset($_SESSION['id-user'])){
             }
         }
     }
-    if($_SESSION['id-role']==4){}
+    if($_SESSION['id-role']<=4){
+        $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_SESSION['id-user']))));
+        $id_prodi=addslashes(trim($_SESSION['id-prodi']));
+        $viewProdi=mysqli_query($conn_v1, "SELECT * FROM prodi WHERE id_prodi='$id_prodi'");
+        $rowVProdi=mysqli_fetch_assoc($viewProdi);
+        $icon_profile=mysqli_query($conn_v1, "SELECT * FROM users WHERE id_user='$id_user'");
+        $viewProfile=mysqli_query($conn_v1, "SELECT * FROM users JOIN users_role ON users.id_role=users_role.id_role JOIN prodi ON users.id_prodi=prodi.id_prodi WHERE id_user='$id_user'");
+        $select_prodi=mysqli_query($conn_v1, "SELECT * FROM prodi");
+        if(isset($_POST['save-biodata'])){
+            if(save_biodata($_POST)>0){
+                $_SESSION['message-success']="Biodata kamu berhasil diubah.";
+                header("Location: profile"); exit;
+            }
+        }
+        if(isset($_POST['save-profile'])){
+            if(save_profile($_POST)>0){
+                $_SESSION['message-success']="Profile kamu berhasil diubah.";
+                header("Location: profile"); exit;
+            }
+        }
+        if(isset($_POST['save-password'])){
+            if(save_password($_POST)>0){
+                $_SESSION['message-success']="Password kamu berhasil diubah.";
+                header("Location: profile-settings"); exit;
+            }
+        }
+    }
 }

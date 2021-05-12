@@ -32,7 +32,7 @@
                                     <?php if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}?>
                                     <form action="" method="POST">
                                         <div class="form-group">
-                                            <input type="email" name="email" placeholder="Email" class="form-control text-center" required>
+                                            <input type="text" name="nidn-email" placeholder="NIDN/NIP/Email" class="form-control text-center" required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" placeholder="Password" class="form-control text-center" required>

@@ -34,20 +34,16 @@
     <link rel="stylesheet" type="text/css" href="Assets/css/owl-carousel.css">
     <link rel="stylesheet" type="text/css" href="Assets/css/scroll.css">
     <link rel="stylesheet" type="text/css" href="Assets/fontawesome-free/css/all.min.css">
-<?php }?>
+    <link rel="stylesheet" type="text/css" href="Assets/css/register.css">
+    <?php if(isset($_SESSION['access-file'])){?>
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="Assets/css/styles-profile.css" rel="stylesheet" />
+<?php }}?>
 <style>
-.mobileAR{
-    margin-top: 0;
-}
-.mobileIMG{
-    display: block;
-}
-@media screen and (max-width: 640px){
-    .mobileAR{
-        margin-top: 250px;
+    .mobileAR{margin-top: 0;}
+    .mobileIMG{display: block;}
+    @media screen and (max-width: 640px){
+        .mobileAR{margin-top: 250px;}
+        .mobileIMG{display: hidden;}
     }
-    .mobileIMG{
-        display: hidden;
-    }
-}
 </style>
