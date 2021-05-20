@@ -27,14 +27,14 @@
                     <div class="container">
                         <div class="row">
                             <div class="left-text col-lg-6 col-md-6 col-sm-12 col-xs-12 m-auto" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
-                                <h1 class="text-white mt-5">Lembaga Penjamin Mutu <strong>UNWIRA</strong></h1>
+                                <h1 class="text-white mt-5">Pelayanan Dokumen Lembaga Penjamin Mutu <strong>UNWIRA</strong></h1>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 m-auto" data-scroll-reveal="enter right move 30px over 0.6s after 0.4s">
                                 <?php if(isset($_SESSION['section'])){if($_SESSION['section']==1){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
                                 <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']<=3){?>
                                 <div class="row">
                                     <!-- Insert Document -->
-                                    <?php if($_SESSION['id-role']==2 || $_SESSION['id-role']==1){?>
+                                    <?php if($_SESSION['id-role']<=3){?>
                                     <div class="col-lg-6">
                                         <div class="card card-body border-0 shadow text-center mt-3">
                                             <img src="https://i.ibb.co/vmFRv1z/add-file.png" style="width: 100px" class="m-auto" alt="Add Document">
@@ -82,11 +82,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <?php }?>
                                     <!-- End Insert Document -->
 
                                     <!-- Unduh Document -->
-                                    <?php if($_SESSION['id-role']==3 || $_SESSION['id-role']==1){?>
                                     <div class="col-lg-6">
                                         <div class="card card-body border-0 shadow mt-3">
                                             <img src="https://i.ibb.co/W5zMQNg/file.png" style="width: 100px" class="m-auto" alt="Add Document">
@@ -126,6 +124,7 @@
                                                                                 <?php if($_SESSION['id-access']==1){?>
                                                                                 <td><form action="" method="POST">
                                                                                     <input type="hidden" name="data-doc" value="<?= $rowNProdi['data_doc']?>">
+                                                                                    <input type="hidden" name="documen" value="<?= $rowNProdi['documen']?>">
                                                                                     <button type="submit" name="unduh-DocNProdi" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                                 </form></td>
                                                                                 <?php }?>
@@ -167,6 +166,7 @@
                                                                                 <?php if($_SESSION['id-access']==1){?>
                                                                                 <td><form action="" method="POST">
                                                                                     <input type="hidden" name="data-doc" value="<?= $rowProdi['data_doc']?>">
+                                                                                    <input type="hidden" name="documen" value="<?= $rowProdi['documen']?>">
                                                                                     <button type="submit" name="unduh-DocProdi" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                                 </form></td>
                                                                                 <?php }?>
@@ -198,9 +198,149 @@
             </div>
         <!-- ***** Welcome Area End ***** -->
     
-        <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']==1){?>
+        <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']<=2){?>
 
-        <!-- ***** Data Users Start ***** -->
+        <!-- ***** Data Jenis Doc Start ***** -->
+            <section class="section" id="jenis-doc">
+                <div class="container" style="margin-top: 150px">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12 col-sm-12" data-scroll-reveal="enter left move 30px over 0.6s after 0.4s">
+                            <img src="Assets/img/document.png" class="rounded img-fluid d-block mx-auto" alt="App">
+                        </div>
+                        <div class="right-text col-lg-8 col-md-12 col-sm-12 m-auto mobile-bottom-fix">
+                            <div class="left-heading">
+                                <h3>Jenis Dokumen LPM UNWIRA</h3>
+                            </div>
+                            <div class="row">
+                                <!-- Alert Start -->
+                                    <div class="col-md-12">
+                                        <?php if(isset($_SESSION['section'])){if($_SESSION['section']==5){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
+                                    </div>
+                                <!-- Alert End -->
+
+                                <!-- Add Jenis Dokumen Start -->
+                                        <div class="card card-body shadow border-0 mt-3">
+                                            <div class="div">
+                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambahjenisDokumen">Tambah Jenis Dokumen</button>
+                                                <div class="modal fade" id="tambahjenisDokumen" tabindex="-1" role="dialog" aria-labelledby="tambahjenisDokumen" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="tambahjenisDokumen">Tambah Jenis Dokumen</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <form action="" method="POST">
+                                                                <div class="modal-body">
+                                                                    <div class="form-group">
+                                                                        <input type="text" name="document" placeholder="Nama Dokumen" class="form-control">
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <select name="id-access" class="form-control" required>
+                                                                            <option>Pilih Akses</option>
+                                                                            <?php foreach($lpm_doc_access as $rowAccess):?>
+                                                                            <option value="<?= $rowAccess['id_access']?>"><?= $rowAccess['access']?></option>
+                                                                            <?php endforeach;?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" name="add-jenis-doc" class="btn btn-info btn-sm shadow">Save</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-auto">
+                                                <table class="table table-sm text-center mt-2">
+                                                    <thead>
+                                                        <tr style="border-top: hidden;">
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Nama</th>
+                                                            <th scope="col">Akses</th>
+                                                            <?php if($_SESSION['id-access']==1){?>
+                                                            <th colspan="1">Aksi</th>
+                                                            <?php }?>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php $no=1; if(mysqli_num_rows($lpm_doc)==0){?>
+                                                        <tr>
+                                                            <th colspan="8">Belum ada jenis dokumen yang dimasukan.</th>
+                                                        </tr>
+                                                        <?php }if(mysqli_num_rows($lpm_doc)>0){while($rowDoc=mysqli_fetch_assoc($lpm_doc)){?>
+                                                        <tr>
+                                                            <th scope="row"><?= $no;?></th>
+                                                            <td><?= $rowDoc['documen']?></td>
+                                                            <td><?= $rowDoc['access']?></td>
+                                                            <?php if($_SESSION['id-access']==1){?>
+                                                            <td><form action="" method="POST">
+                                                                <input type="hidden" name="id-doc" value="<?= $rowDoc['id_doc']?>">
+                                                                <input type="hidden" name="old-doc" value="<?= $rowDoc['documen']?>">
+                                                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#jenisdoc<?= $rowDoc['id_doc']?>"><i class="fas fa-trash"></i> Hapus</button>
+                                                                <div class="modal fade" id="jenisdoc<?= $rowDoc['id_doc']?>" tabindex="-1" role="dialog" aria-labelledby="jenisdoc<?= $rowDoc['id_doc']?>Label" aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                Anda yakin ingin menghapus direktori <?= $rowDoc['documen']?>? Jika anda menghapusnya maka file yang berada di dalam direktori tersebut akan hilang. Jika ingin maka tekan Yes dan jika tidak tekan No.
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-light btn-sm shadow" data-dismiss="modal">No</button>
+                                                                                <button type="submit" name="hapus-jenis-doc" class="btn btn-info btn-sm shadow">Yes</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form></td>
+                                                            <?php }?>
+                                                        </tr>
+                                                        <?php $no++; }}?>
+                                                    </tbody>
+                                                </table>
+                                                <nav class="small" aria-label="Page navigation example">
+                                                    <ul class="pagination justify-content-center">
+                                                        <?php if(isset($page2)){if(isset($total_page2)){if($page2>1):?>
+                                                        <li class="page-item shadow">
+                                                            <a class="page-link border-0" href="./?page=<?= $page2-1;?>" tabindex="-1" aria-disabled="true">Previous</a>
+                                                        </li>
+                                                        <?php endif;?>
+                                                        <?php for($i=1; $i<=$total_page2; $i++):?>
+                                                            <?php if($i<=5):?>
+                                                                <?php if($i==$page2):?>
+                                                                    <li class="page-item shadow"><a class="page-link font-weight-bold border-0" href="./?page=<?= $i;?>"><?= $i;?></a></li>
+                                                                <?php else :?>
+                                                                    <li class="page-item shadow"><a class="page-link border-0" href="./?page=<?= $i;?>"><?= $i;?></a></li>
+                                                                <?php endif;?>
+                                                            <?php endif;?>
+                                                        <?php endfor;?>
+                                                        <?php if($page2<$total_page2):?>
+                                                        <li class="page-item shadow">
+                                                            <a class="page-link border-0" href="./?page=<?= $page2+1;?>">Next</a>
+                                                        </li>
+                                                        <?php endif;}}?>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    <!-- <div class="col-lg-12">
+                                    </div> -->
+                                <!-- Add Jenis Dokumen Start -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <!-- ***** Data jenis Doc End ***** -->
+
+        <!-- ***** Data Prodi/Unit Start ***** -->
             <section class="section" id="prodi-unit">
                 <div class="container" style="margin-top: 150px">
                     <div class="row">
@@ -309,7 +449,7 @@
                     </div>
                 </div>
             </section>
-        <!-- ***** Data Users End ***** -->
+        <!-- ***** Data prodi/unit End ***** -->
 
         <!-- ***** Data Users Start ***** -->
             <section class="section" id="users">
@@ -320,7 +460,7 @@
                         </div>
                         <div class="right-text col-lg-8 col-md-12 col-sm-12 mobile-top-fix">
                             <div class="left-heading">
-                                <h3>Ingin berbagi dokumen dengan Pengguna lain? Ubah data Pengguna kamu ke Dosen Fakultas/Prodi</h3>
+                                <h3>Ingin berbagi dokumen dengan Pengguna lain? Ubah data Pengguna kamu ke Dosen Prodi/Pegawai Unit</h3>
                             </div>
                             <div class="left-text mt-3">
                                 <?php if(isset($_SESSION['section'])){if($_SESSION['section']==2){if(isset($message_success)){echo$message_success;}if(isset($message_danger)){echo$message_danger;}if(isset($message_warning)){echo$message_warning;}if(isset($message_info)){echo$message_info;}if(isset($message_dark)){echo$message_dark;}}}?>
@@ -547,6 +687,7 @@
                                                                 <tr style="border-top: hidden">
                                                                     <th scope="col">#</th>
                                                                     <th scope="col">Tgl Buat</th>
+                                                                    <th scope="col">Pengirim</th>
                                                                     <th scope="col">Jenis Dokumen</th>
                                                                     <th scope="col">Nama</th>
                                                                     <th colspan="3">Aksi</th>
@@ -555,12 +696,13 @@
                                                             <tbody>
                                                                 <?php $no=1; if(mysqli_num_rows($viewDocument1)==0){?>
                                                                 <tr>
-                                                                    <th colspan="5">Belum ada document yg dimasukan.</th>
+                                                                    <th colspan="8">Belum ada document yg dimasukan.</th>
                                                                 </tr>
                                                                 <?php }else if(mysqli_num_rows($viewDocument1)>0){while($rowDoc=mysqli_fetch_assoc($viewDocument1)){?>
                                                                 <tr>
                                                                     <th scope="row"><?= $no;?></th>
                                                                     <td><?= $rowDoc['date_created']?></td>
+                                                                    <td><?= $rowDoc['username']?></td>
                                                                     <td><?= $rowDoc['documen']?></td>
                                                                     <td><?= $rowDoc['data_doc']?></td>
                                                                     <td>
@@ -573,7 +715,7 @@
                                                                                         $ekstensiGambar=explode('.',$rowDoc['data_doc']);
                                                                                         $ekstensiGambar=strtolower(end($ekstensiGambar));
                                                                                         if(in_array($ekstensiGambar,$ekstensiDokumen)){
-                                                                                            echo "<embed src='Assets/document/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
+                                                                                            echo "<embed src='Assets/document/".$rowDoc['documen']."/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
                                                                                         }
                                                                                     ?></div>
                                                                                     <div class="modal-footer">
@@ -585,12 +727,14 @@
                                                                     </td>
                                                                     <td><form action="" method="POST">
                                                                         <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                        <input type="hidden" name="documen" value="<?= $rowDoc['documen']?>">
                                                                         <button type="submit" name="unduh-Doc" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                     </form></td>
                                                                     <td>
                                                                         <form action="" method="POST">
                                                                             <input type="hidden" name="id-data2" value="<?= $rowDoc['id_data2']?>">
                                                                             <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                            <input type="hidden" name="id-doc" value="<?= $rowDoc['id_doc']?>">
                                                                             <button type="submit" name="delete-docNon-prodi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
                                                                         </form>
                                                                     </td>
@@ -618,6 +762,7 @@
                                                                 <tr style="border-top: hidden">
                                                                     <th scope="col">#</th>
                                                                     <th scope="col">Tgl Buat</th>
+                                                                    <th scope="col">Pengirim</th>
                                                                     <th scope="col">Jenis Dokumen</th>
                                                                     <th scope="col">Nama</th>
                                                                     <th scope="col">Prodi/Fakultas</th>
@@ -627,12 +772,13 @@
                                                             <tbody>
                                                                 <?php $no=1; if(mysqli_num_rows($viewDocument2)==0){?>
                                                                 <tr>
-                                                                    <th colspan="5">Belum ada document yg dimasukan.</th>
+                                                                    <th colspan="8">Belum ada document yg dimasukan.</th>
                                                                 </tr>
                                                                 <?php }else if(mysqli_num_rows($viewDocument2)>0){while($rowDoc=mysqli_fetch_assoc($viewDocument2)){?>
                                                                 <tr>
                                                                     <th scope="row"><?= $no;?></th>
                                                                     <td><?= $rowDoc['date_created']?></td>
+                                                                    <td><?= $rowDoc['username']?></td>
                                                                     <td><?= $rowDoc['documen']?></td>
                                                                     <td><?= $rowDoc['data_doc']?></td>
                                                                     <td><?= $rowDoc['prodi']?>/<?= $rowDoc['fakultas']?></td>
@@ -646,7 +792,7 @@
                                                                                         $ekstensiGambar=explode('.',$rowDoc['data_doc']);
                                                                                         $ekstensiGambar=strtolower(end($ekstensiGambar));
                                                                                         if(in_array($ekstensiGambar,$ekstensiDokumen)){
-                                                                                            echo "<embed src='Assets/document/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
+                                                                                            echo "<embed src='Assets/document/".$rowDoc['documen']."/".$rowDoc['data_doc']."' width='800px' height='2100px' />";
                                                                                         }
                                                                                     ?></div>
                                                                                     <div class="modal-footer">
@@ -658,12 +804,14 @@
                                                                     </td>
                                                                     <td><form action="" method="POST">
                                                                         <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                        <input type="hidden" name="documen" value="<?= $rowDoc['documen']?>">
                                                                         <button type="submit" name="unduh-Doc" class="btn btn-info btn-sm"><i class="fas fa-download"></i> Unduh</button>
                                                                     </form></td>
                                                                     <td>
                                                                         <form action="" method="POST">
                                                                             <input type="hidden" name="id-data1" value="<?= $rowDoc['id_data1']?>">
                                                                             <input type="hidden" name="data-doc" value="<?= $rowDoc['data_doc']?>">
+                                                                            <input type="hidden" name="id-doc" value="<?= $rowDoc['id_doc']?>">
                                                                             <button type="submit" name="delete-docProdi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
                                                                         </form>
                                                                     </td>

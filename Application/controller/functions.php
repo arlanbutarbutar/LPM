@@ -71,7 +71,8 @@ if(!isset($_SESSION['id-user'])){
     // function __($data){global $conn_1, $date;}
 }
 if(isset($_SESSION['id-user'])){
-    if($_SESSION['id-role']==1){
+    $id_user=addslashes(trim($_SESSION['id-user']));
+    if($_SESSION['id-role']<=2){
         function editProdi_user($data){global $conn_v1;
             $nidn=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['nidn']))));
             $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
@@ -123,8 +124,12 @@ if(isset($_SESSION['id-user'])){
         }
         function deleteDoc_nonProdi($data){global $conn_v1;
             $id_data2=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-data2']))));
+            $id_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-doc']))));
+            $putDocName=mysqli_query($conn_v1, "SELECT * FROM lpm_doc WHERE id_doc='$id_doc'");
+            $rowDoc=mysqli_fetch_assoc($putDocName);
+            $docName=$rowDoc['documen'];
             $data_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['data-doc']))));
-            $files=glob("Assets/document/".$data_doc);
+            $files=glob("Assets/document/".$docName."/".$data_doc);
             foreach ($files as $file) {
                 if (is_file($file))
                 unlink($file);
@@ -134,8 +139,12 @@ if(isset($_SESSION['id-user'])){
         }
         function deleteDoc_Prodi($data){global $conn_v1;
             $id_data1=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-data1']))));
+            $id_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-doc']))));
+            $putDocName=mysqli_query($conn_v1, "SELECT * FROM lpm_doc WHERE id_doc='$id_doc'");
+            $rowDoc=mysqli_fetch_assoc($putDocName);
+            $docName=$rowDoc['documen'];
             $data_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['data-doc']))));
-            $files=glob("Assets/document/".$data_doc);
+            $files=glob("Assets/document/".$docName."/".$data_doc);
             foreach ($files as $file) {
                 if (is_file($file))
                 unlink($file);
@@ -154,28 +163,94 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "INSERT INTO prodi(id_fakultas,prodi) VALUES('$id_fakultas','$prodi_unit')");
             return mysqli_affected_rows($conn_v1);
         }
+        function add_jenis_doc($data){global $conn_v1;
+            $document=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['document']))));
+            $checkDocument=mysqli_query($conn_v1, "SELECT * FROM lpm_doc WHERE documen='$document'");
+            if(mysqli_num_rows($checkDocument)>0){
+                $_SESSION['section']=5;
+                $_SESSION['message-danger']="Nama dokumen sudah ada! silakan masukan yang lain.";
+                header("Location: ./#jenis-doc");return false;
+            }
+            $id_access=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-access']))));
+            if(empty($id_access)){
+                $_SESSION['section']=5;
+                $_SESSION['message-danger']="Kamu belum memilih akses dokumen.";
+                header("Location: ./#jenis-doc");return false;
+            }
+            mkdir("Assets/document/$document");
+            mysqli_query($conn_v1, "INSERT INTO lpm_doc(documen,id_access) VALUES('$document','$id_access')");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function delete_jenis_doc($data){global $conn_v1;
+            $id_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-doc']))));
+            $old_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['old-doc']))));
+            rmdir("Assets/document/$old_doc");
+            mysqli_query($conn_v1, "DELETE FROM lpm_doc WHERE id_doc='$id_doc'");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function schedule(){global $conn_v1,$id_user;
+            $dataSchedule=file_schedule();
+            mysqli_query($conn_v1, "INSERT INTO schedule(id_user,schedule) VALUES('$id_user','$dataSchedule')");
+            return mysqli_affected_rows($conn_v1);
+        }
+        function file_schedule(){
+            $namaFile=$_FILES["documen"]["name"];
+            $ukuranFile=$_FILES["documen"]["size"];
+            $error=$_FILES["documen"]["error"];
+            $tmpName=$_FILES["documen"]["tmp_name"];
+            if($error===4){
+                $_SESSION['section']=1;
+                $_SESSION['message-danger']="Pilih file kamu terlebih dahulu!";
+                header("Location: ./"); return false;
+            }
+            $ekstensiGambarValid=['pdf'];
+            $ekstensiGambar=explode('.',$namaFile);
+            $ekstensiGambar=strtolower(end($ekstensiGambar));
+            if(!in_array($ekstensiGambar,$ekstensiGambarValid)){
+                $_SESSION['section']=1;
+                $_SESSION['message-danger']="Maaf, file kamu bukan documen!";
+                header("Location: ./"); return false;
+            }
+            if($ukuranFile>5000000){
+                $_SESSION['section']=1;
+                $_SESSION['message-danger']="Maaf, ukuran file terlalu besar! (5MB)";
+                header("Location: ./"); return false;
+            }
+            $data=$namaFile;
+            move_uploaded_file($tmpName,'Assets/document/'.$data);
+            return $data;
+        }
+        function del_schedule($data){global $conn_v1;
+            $schedule=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['schedule']))));
+            unlink("Assets/document/$schedule");
+            mysqli_query($conn_v1, "DELETE FROM schedule");
+            return mysqli_affected_rows($conn_v1);
+        }
         // function __($data){global $conn_v1, $date;}
     }
-    if($_SESSION['id-role']<=2){
-        function data1_lpm($data){global $conn_v1, $date;
+    if($_SESSION['id-role']<=3){
+        function data1_lpm($data){global $conn_v1, $date, $id_user;
             $id_doc=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-doc']))));
             if(empty($id_doc) || $id_doc==0){
                 $_SESSION['section']=1;
                 $_SESSION['message-danger']="Kamu belum memasukan Jenis Dokumen, silakan masukan ulang!";
                 header("Location: ./#page-top");return false;
             }
+            $putDocName=mysqli_query($conn_v1, "SELECT * FROM lpm_doc WHERE id_doc='$id_doc'");
+            $rowDoc=mysqli_fetch_assoc($putDocName);
+            $docName=$rowDoc['documen'];
             $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
             if(empty($id_prodi)){$id_prodi=0;}
-            $data_doc=file_documen($id_doc,$id_prodi);
+            $data_doc=file_documen($id_doc,$id_prodi,$docName);
             if(!$data_doc){return false;}
             if(empty($id_prodi) || $id_prodi==0){
-                mysqli_query($conn_v1, "INSERT INTO lpm_data2_doc(id_doc,data_doc,date_created) VALUES('$id_doc','$data_doc','$date')");
+                mysqli_query($conn_v1, "INSERT INTO lpm_data2_doc(id_doc,id_user,data_doc,date_created) VALUES('$id_doc','$id_user','$data_doc','$date')");
             }else if(!empty($id_prodi) || $id_prodi>0){
-                mysqli_query($conn_v1, "INSERT INTO lpm_data1_doc(id_doc,id_prodi,data_doc,date_created) VALUES('$id_doc','$id_prodi','$data_doc','$date')");
+                mysqli_query($conn_v1, "INSERT INTO lpm_data1_doc(id_doc,id_user,id_prodi,data_doc,date_created) VALUES('$id_doc','$id_user','$id_prodi','$data_doc','$date')");
             }
             return mysqli_affected_rows($conn_v1);
         }
-        function file_documen($id_doc,$id_prodi){
+        function file_documen($id_doc,$id_prodi,$docName){
             $namaFile=$_FILES["documen"]["name"];
             $ukuranFile=$_FILES["documen"]["size"];
             $error=$_FILES["documen"]["error"];
@@ -185,7 +260,7 @@ if(isset($_SESSION['id-user'])){
                 $_SESSION['message-danger']="Pilih documen kamu terlebih dahulu!";
                 header("Location: ./#page-top"); return false;
             }
-            $ekstensiGambarValid=['xls','pdf','ppt','doc','docx'];
+            $ekstensiGambarValid=['xls','pdf','ppt','doc','docx','zip','rar'];
             $ekstensiGambar=explode('.',$namaFile);
             $ekstensiGambar=strtolower(end($ekstensiGambar));
             if(!in_array($ekstensiGambar,$ekstensiGambarValid)){
@@ -193,18 +268,15 @@ if(isset($_SESSION['id-user'])){
                 $_SESSION['message-danger']="Maaf, file kamu bukan documen!";
                 header("Location: ./#page-top"); return false;
             }
-            if($ukuranFile>20000000){
+            if($ukuranFile>100000000){
                 $_SESSION['section']=1;
-                $_SESSION['message-danger']="Maaf, ukuran gambar terlalu besar! (20MB)";
+                $_SESSION['message-danger']="Maaf, ukuran file terlalu besar! (10MB)";
                 header("Location: ./#page-top"); return false;
             }
             $data_doc=$id_doc."_".$id_prodi."_".$namaFile;
-            move_uploaded_file($tmpName,'Assets/document/'.$data_doc);
+            move_uploaded_file($tmpName,'Assets/document/'.$docName.'/'.$data_doc);
             return $data_doc;
         }
-        // function __($data){global $conn_v1, $date;}
-    }
-    if($_SESSION['id-role']<=3){
         // function __($data){global $conn_v1, $date;}
     }
     if($_SESSION['id-role']<=4){

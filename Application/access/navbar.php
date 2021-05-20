@@ -6,16 +6,19 @@
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                        <a href="#page-top" class="logo">LPM UNWIRA</a>
+                        <a href="#page-top" class="logo">Pelayanan Dokumen<br><p class="mt-n4">Lembaga Penjamin Mutu UNWIRA</p></a>
                         <!-- ***** Logo End ***** --> 
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                             <li class="scroll-to-section"><a href="<?php if(isset($_SESSION['auth'])){echo ".";}?>./">Home</a></li>
-                            <li class="scroll-to-section"><a href="<?php if(isset($_SESSION['auth'])){echo "../";}?>info">Info</a></li>
                             <li class="scroll-to-section"><a href="http://spmi.unwira.ac.id/auth">e-SPMI</a></li>
                             <!-- <li class="scroll-to-section"><a href="#about">About</a></li>
                             <li class="scroll-to-section"><a href="#contact-us">Contact Us</a></li> -->
-                            <?php if(isset($_SESSION['id-user'])){?>
+                            <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']<=3){?>
+                            <li class="scroll-to-section">
+                                <button type="button" class="btn btn-info shadow-lg ml-n3 mt-1 btn-sm" data-toggle="modal" data-target=".jadwal-kegiatan"><i class="fas fa-calendar-alt"></i> <span class="badge badge-info text-warning"><?= $countSchedule_now?></span></button>
+                            </li>
+                            <?php }?>
                             <!-- <li class="submenu">
                                 <a href="#">Info</a>
                                 <ul>
@@ -70,8 +73,12 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link js-scroll-trigger text-light" href="./">Home</a></li>
-                    <li class="nav-item"><a class="nav-link js-scroll-trigger text-light" href="info">Info</a></li>
                     <li class="nav-item"><a class="nav-link js-scroll-trigger text-light mr-3" href="http://spmi.unwira.ac.id/auth">e-SPMI</a></li>
+                    <?php if($_SESSION['id-role']<=3){?>
+                    <li class="scroll-to-section">
+                        <button type="button" class="btn btn-info shadow-lg ml-n3 mt-1 btn-sm" data-toggle="modal" data-target=".jadwal-kegiatan"><i class="fas fa-calendar-alt"></i> <span class="badge badge-info text-warning"><?= $countSchedule_now?></span></button>
+                    </li>
+                    <?php }?>
                     <a class="nav-link dropdown-toggle text-dark no-arrow mt-n2" href="" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php if(mysqli_num_rows($icon_profile)==0){?>
                             <p class="text-danger">Query error!</p>
@@ -99,3 +106,46 @@
         </div>
     </nav>
 <?php }?>
+
+<?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']<=3){if(mysqli_num_rows($viewSchedule)==0){?>
+    <div class="modal fade jadwal-kegiatan" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content text-center">
+                <p class="mt-3">Belum ada jadwal kegiatan yang dimasukan.</p>
+                <?php if(isset($_SESSION['id-user'])){if($_SESSION['id-role']<=2){?>
+                    <p class="mt-5">Silakan masukan jadwal anda dibawah ini.</p>
+                    <div class="col-4 m-auto">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            <div class="custom-file mt-3">
+                                <input type="file" name="documen" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Pilih File Jadwal Kegiatan</label>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" name="upload-schedule" class="btn btn-info btn-sm mt-3 shadow">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+<?php }}if(mysqli_num_rows($viewSchedule)>0){while($row=mysqli_fetch_assoc($viewSchedule)){?>
+    <div class="modal fade jadwal-kegiatan" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content text-center bg-transparent border-0">
+                <?php $ekstensiDokumen=['pdf'];
+                $ekstensiGambar=explode('.',$row['schedule']);
+                $ekstensiGambar=strtolower(end($ekstensiGambar));
+                if(in_array($ekstensiGambar,$ekstensiDokumen)){
+                    echo "<embed src='Assets/document/".$row['schedule']."' class='m-auto' width='1100px' height='600px' />";
+                }?>
+                <form action="" method="POST">
+                    <input type="hidden" name="schedule" value="<?= $row['schedule']?>">
+                    <div class="form-group">
+                        <button type="submit" name="del-schedule" class="btn btn-danger btn-sm mt-3"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+ <?php }}}}?>

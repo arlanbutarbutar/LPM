@@ -90,7 +90,7 @@ if(!isset($_SESSION['id-user'])){
     }
     $select_prodi=mysqli_query($conn_v1, "SELECT * FROM prodi");
 }else if($_SESSION['id-user']){
-    if($_SESSION['id-role']==1){
+    if($_SESSION['id-role']<=2){
         $data1=15;
         $result1=mysqli_query($conn_v1, "SELECT * FROM users");
         $total1=mysqli_num_rows($result1);
@@ -140,11 +140,21 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#users"); exit;
             }
         }
-        $viewDocument1=mysqli_query($conn_v1, "SELECT * FROM lpm_data2_doc JOIN lpm_doc ON lpm_data2_doc.id_doc=lpm_doc.id_doc");
-        $viewDocument2=mysqli_query($conn_v1, "SELECT * FROM lpm_data1_doc JOIN lpm_doc ON lpm_data1_doc.id_doc=lpm_doc.id_doc JOIN prodi ON lpm_data1_doc.id_prodi=prodi.id_prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas");
+        $selectFakultas=mysqli_query($conn_v1, "SELECT * FROM fakultas");
+        $prodiUnit=mysqli_query($conn_v1, "SELECT * FROM prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas");
+        if(isset($_POST['save-prodi-unit'])){
+            if(add_prodiUnit($_POST)>0){
+                $_SESSION['section']=4;
+                $_SESSION['message-success'] = "Telah berhasil menambahkan Prodi/Unit baru.";
+                header("Location: ./#prodi-unit");
+            }
+        }
+        $viewDocument1=mysqli_query($conn_v1, "SELECT * FROM lpm_data2_doc JOIN lpm_doc ON lpm_data2_doc.id_doc=lpm_doc.id_doc JOIN users ON lpm_data2_doc.id_user=users.id_user");
+        $viewDocument2=mysqli_query($conn_v1, "SELECT * FROM lpm_data1_doc JOIN lpm_doc ON lpm_data1_doc.id_doc=lpm_doc.id_doc JOIN prodi ON lpm_data1_doc.id_prodi=prodi.id_prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas JOIN users ON lpm_data1_doc.id_user=users.id_user");
         if(isset($_POST['unduh-Doc'])){
             $filename=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['data-doc']))));
-            $back_dir ="Assets/document/";
+            $documen=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['documen']))));
+            $back_dir ="Assets/document/$documen/";
             $file = $back_dir.$filename;
             if (file_exists($file)) {
                 header('Content-Description: File Transfer');
@@ -180,17 +190,40 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#document");
             }
         }
-        $selectFakultas=mysqli_query($conn_v1, "SELECT * FROM fakultas");
-        $prodiUnit=mysqli_query($conn_v1, "SELECT * FROM prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas");
-        if(isset($_POST['save-prodi-unit'])){
-            if(add_prodiUnit($_POST)>0){
-                $_SESSION['section']=4;
-                $_SESSION['message-success'] = "Telah berhasil menambahkan Prodi/Unit baru.";
-                header("Location: ./#prodi-unit");
+        $lpm_doc_access=mysqli_query($conn_v1, "SELECT * FROM lpm_doc_access");
+        $data2=10;
+        $result2=mysqli_query($conn_v1, "SELECT * FROM lpm_doc");
+        $total2=mysqli_num_rows($result2);
+        $total_page2=ceil($total2/$data2);
+        $page2=(isset($_GET['page']))?$_GET['page']:1;
+        $awal_data2=($data2*$page2)-$data2;
+        $lpm_doc=mysqli_query($conn_v1, "SELECT * FROM lpm_doc JOIN lpm_doc_access ON lpm_doc.id_access=lpm_doc_access.id_access LIMIT $awal_data2, $data2");
+        if(isset($_POST['add-jenis-doc'])){
+            if(add_jenis_doc($_POST)>0){
+                $_SESSION['section']=5;
+                $_SESSION['message-success'] = "Jenis dokumen telah ditambahkan!";
+                header("Location: ./#jenis-doc");
+            }
+        }
+        if(isset($_POST['hapus-jenis-doc'])){
+            if(delete_jenis_doc($_POST)>0){
+                $_SESSION['section']=5;
+                $_SESSION['message-success'] = "Jenis dokumen yang kamu pilih telah dihapus!";
+                header("Location: ./#jenis-doc");
+            }
+        }
+        if(isset($_POST['upload-schedule'])){
+            if(schedule($_POST)>0){
+                header("Location: ./");
+            }
+        }
+        if(isset($_POST['del-schedule'])){
+            if(del_schedule($_POST)>0){
+                header("Location: ./");
             }
         }
     }
-    if($_SESSION['id-role']<=2){
+    if($_SESSION['id-role']<=3){
         $selectDoc=mysqli_query($conn_v1, "SELECT * FROM lpm_doc");
         $selectProdi=mysqli_query($conn_v1, "SELECT * FROM prodi");
         if(isset($_POST['lpm-data1-doc'])){
@@ -200,12 +233,11 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#page-top"); exit;
             }
         }
-    }
-    if($_SESSION['id-role']<=3){
         $dataLPM2=mysqli_query($conn_v1, "SELECT * FROM lpm_data2_doc JOIN lpm_doc ON lpm_data2_doc.id_doc=lpm_doc.id_doc ORDER BY id_data2 DESC");
         if(isset($_POST['unduh-DocNProdi'])){
             $filename=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['data-doc']))));
-            $back_dir ="Assets/document/";
+            $documen=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['documen']))));
+            $back_dir ="Assets/document/$documen/";
             $file = $back_dir.$filename;
             if (file_exists($file)) {
                 header('Content-Description: File Transfer');
@@ -230,7 +262,8 @@ if(!isset($_SESSION['id-user'])){
         $dataLPM1=mysqli_query($conn_v1, "SELECT * FROM lpm_data1_doc JOIN lpm_doc ON lpm_data1_doc.id_doc=lpm_doc.id_doc ORDER BY id_data1 DESC");
         if(isset($_POST['unduh-DocProdi'])){
             $filename=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['data-doc']))));
-            $back_dir ="Assets/document/";
+            $documen=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_POST['documen']))));
+            $back_dir ="Assets/document/$documen/";
             $file = $back_dir.$filename;
             if (file_exists($file)) {
                 header('Content-Description: File Transfer');
@@ -252,6 +285,9 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#page-top");
             }
         }
+        $countSchedule=mysqli_query($conn_v1, "SELECT * FROM schedule");
+        $countSchedule_now=mysqli_num_rows($countSchedule);
+        $viewSchedule=mysqli_query($conn_v1, "SELECT * FROM schedule");
     }
     if($_SESSION['id-role']<=4){
         $id_user=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $_SESSION['id-user']))));
