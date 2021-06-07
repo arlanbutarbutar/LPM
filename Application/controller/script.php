@@ -149,6 +149,13 @@ if(!isset($_SESSION['id-user'])){
                 header("Location: ./#prodi-unit");
             }
         }
+        if(isset($_POST['hapus-prodi'])){
+            if(deleteProdiUnit($_POST)>0){
+                $_SESSION['section']=4;
+                $_SESSION['message-success'] = "Data Prodi/Unit yang kamu pilih telah dihapus.";
+                header("Location: ./#prodi-unit");
+            }
+        }
         $viewDocument1=mysqli_query($conn_v1, "SELECT * FROM lpm_data2_doc JOIN lpm_doc ON lpm_data2_doc.id_doc=lpm_doc.id_doc JOIN users ON lpm_data2_doc.id_user=users.id_user");
         $viewDocument2=mysqli_query($conn_v1, "SELECT * FROM lpm_data1_doc JOIN lpm_doc ON lpm_data1_doc.id_doc=lpm_doc.id_doc JOIN prodi ON lpm_data1_doc.id_prodi=prodi.id_prodi JOIN fakultas ON prodi.id_fakultas=fakultas.id_fakultas JOIN users ON lpm_data1_doc.id_user=users.id_user");
         if(isset($_POST['unduh-Doc'])){

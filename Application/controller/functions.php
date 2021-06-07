@@ -163,6 +163,11 @@ if(isset($_SESSION['id-user'])){
             mysqli_query($conn_v1, "INSERT INTO prodi(id_fakultas,prodi) VALUES('$id_fakultas','$prodi_unit')");
             return mysqli_affected_rows($conn_v1);
         }
+        function deleteProdiUnit($data){global $conn_v1;
+            $id_prodi=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['id-prodi']))));
+            mysqli_query($conn_v1, "DELETE FROM prodi WHERE id_prodi='$id_prodi'");
+            return mysqli_affected_rows($conn_v1);
+        }
         function add_jenis_doc($data){global $conn_v1;
             $document=htmlspecialchars(addslashes(trim(mysqli_real_escape_string($conn_v1, $data['document']))));
             $checkDocument=mysqli_query($conn_v1, "SELECT * FROM lpm_doc WHERE documen='$document'");

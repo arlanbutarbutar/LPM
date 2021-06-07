@@ -427,7 +427,7 @@
                                                                     <td><?= $rowProdi['fakultas']?></td>
                                                                     <?php if($_SESSION['id-access']==1){?>
                                                                     <td><form action="" method="POST">
-                                                                        <input type="hidden" name="id-prodi" value="<?= $rowProdi['data_doc']?>">
+                                                                        <input type="hidden" name="id-prodi" value="<?= $rowProdi['id_prodi']?>">
                                                                         <button type="submit" name="hapus-prodi" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                                                     </form></td>
                                                                     <?php }?>
