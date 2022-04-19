@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-7 col-md-12 col-sm-12">
-                    <p class="copyright">Powered by <a rel="nofollow" href="http://47.74.65.71:83" target="_blank">Sahala Z.R Butar Butar</a></p>
+                    <p class="copyright">Powered by <a rel="nofollow" href="https://arcode.pw" target="_blank">Sahala Z.R Butar Butar</a></p>
                 </div>
                 <div class="col-lg-5 col-md-12 col-sm-12">
                     <ul class="social">
